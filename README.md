@@ -1,6 +1,8 @@
 # wrtc-simple-data
 A simple Node.js library to communicate between **multiple peers** via WebRTC data channels.
 
+[![NPM](https://nodei.co/npm/wrtc-simple-data.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/wrtc-simple-data/)
+
 ## What is this?
 This is a library which helps you with WebRTC communication between Node apps. You might have multiple apps that want to exchange data (e.g. logging, sensor data, ...) using a peer-to-peer connection. To do so you can use this lib to get set up p2p data channels between them with very low effort.
 Special is the multi-peer support. Usually a data channel exists between exactly two peers. If you want to have communication over more than just two peers but still without a central server (which probably is the reason why you even chose WebRTC instead of e.g. Websockets) you will need to build up a mesh. This basically means that each node hold a connection to (and a data channel with) every other node.
