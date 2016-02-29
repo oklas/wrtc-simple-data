@@ -1,0 +1,29 @@
+{
+  "name": "wrtc-simple-data",
+  "version": "0.0.1",
+  "description": "A simple Node.js library to communicate via WebRTC data channels as simple and lightweight as any possible.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "freeice": "^2.2.0",
+    "socket.io-client": "^1.4.5",
+    "wrtc": "0.0.59"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1try/wrtc-simple-data.git"
+  },
+  "keywords": [
+    "webrtc",
+    "datachannel",
+    "node"
+  ],
+  "author": "Ferdinand Mütsch <mail@ferdinand-muetsch.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/n1try/wrtc-simple-data/issues"
+  },
+  "homepage": "https://github.com/n1try/wrtc-simple-data#readme"
+}
