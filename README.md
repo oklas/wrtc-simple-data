@@ -15,11 +15,12 @@ Although the data communication is peer-to-peer with WebRTC you still need to ha
 2. `var dc = require('wrtc-simple-data')(opts)`
 
 or
+
 1. `git clone https://github.com/n1try/wrtc-simple-data`
 2. `npm install`
 3. `var dc = require('wrtc-simple-data')(opts)`
 
-And don't forget to start to install and start the signalling server...
+And don't forget to install and start the signalling server...
 
 ### Troubleshooting
 This project depends on https://www.npmjs.com/package/wrtc. Please make sure to fulfil all of its prequesites (https://github.com/js-platform/node-webrtc#prerequisites) first, otherwise there will be compilation errors.
@@ -52,13 +53,13 @@ Also check out https://github.com/n1try/wrtc-simple-data/tree/master/examples.
 ### Events
 * `ready => callback()` - Fired when connection establishment with the signalling server was successful and client is waiting for peers
 * `channel:ready => callback()` - Fired when a data channel with a newly connected peer has successfully been opened
-* `channel:ready => callback()` - Fired when a data channel isn't in open state anymore
+* `channel:notready => callback()` - Fired when a data channel isn't in open state anymore
 * `message => callback(data)` - Fired when receiving a message 
   * `data: {sender: 'senderPeerId:string', text: 'messageText:string'}`
 
 ### Options
 * `signallingServer` (default: 'http://localhost:3000/'): URL of the wrtc-simple-data-signalling server
-* `roomName` (default: 'defaultRoom'): Socket.io room name where new peers connect to on the signalling server (we only support one room, yet)
+* `roomName` (default: 'defaultRoom'): Socket.io room name where new peers connect to on the signalling server
 * `rtcOpts` (default: `{iceServers: freeice()}`): Options to pass to the `RTCPeerConnection` object
 * `channelName` (default: 'messages'): Name of every created data channel - currently doesn't mean anything 
 * `channelOpts` (default: `{reliable: false}`): Options to pass to the `RTCPeerConnection.createDataChannel()` method
