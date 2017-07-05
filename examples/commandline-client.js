@@ -1,6 +1,7 @@
 var dc = require('./../')({
     roomName: 'chatRoom',
-    signallingServer: 'http://localhost:3000',
+    // signallingServer: 'http://localhost:3000',
+    signallingServer: 'http://45.32.186.169:3000',
     rtcOpts: {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]},
     debugMode: false
 });

@@ -9,7 +9,7 @@
   "dependencies": {
     "freeice": "^2.2.0",
     "socket.io-client": "^1.4.5",
-    "wrtc": "0.0.59"
+    "wrtc": "^0.0.62"
   },
   "repository": {
     "type": "git",
