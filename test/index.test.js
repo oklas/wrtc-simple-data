@@ -1,5 +1,5 @@
 var service = require('../src/service')
-var client = require('./../')
+var client = require('../src')
 
 var io, caller, responder, channelsCount, log, evlog, msg
 
