@@ -49,6 +49,7 @@ Also check out https://github.com/n1try/wrtc-simple-data/tree/master/examples.
 ### Functions
 * `.on('event', callback)`
 * `.sendMessage(messageText)`
+* `.close()`
 
 ### Events
 * `ready => callback()` - Fired when connection establishment with the signalling server was successful and client is waiting for peers
@@ -64,3 +65,11 @@ Also check out https://github.com/n1try/wrtc-simple-data/tree/master/examples.
 * `channelName` (default: 'messages'): Name of every created data channel - currently doesn't mean anything 
 * `channelOpts` (default: `{reliable: false}`): Options to pass to the `RTCPeerConnection.createDataChannel()` method
 * `debugMode` (default: false): Turn on/off debug console logs
+
+## Contributors
+
+<a href="../../graphs/contributors">Contributors</a>
+
+## LICENSE
+
+#### [MIT](LICENSE)

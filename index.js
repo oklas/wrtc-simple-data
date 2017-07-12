@@ -18,6 +18,8 @@ module.exports = function (opts) {
     } : function () {
     };
 
+    debug('debug enabled')
+
     var socket = socketio_client(options.signallingServer);
 
     var myId
@@ -182,6 +184,12 @@ module.exports = function (opts) {
                 channel.send(message);
             });
             debug('Sent message');
+        },
+        close: function () {
+          Object.keys(pcMap).forEach((id) => {
+            pcMap[id].close()
+          })
+          socket.close();
         }
     }
 };
