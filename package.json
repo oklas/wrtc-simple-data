@@ -4,6 +4,9 @@
   "description": "A simple Node.js library to communicate via WebRTC data channels as simple and lightweight as any possible.",
   "main": "src/index.js",
   "scripts": {
+    "build": "npm run clean && npm run tsc --",
+    "tsc": "tsc",
+    "lint": "tslint src/**/*.ts?",
     "test": "jest",
     "cover": "jest --coverage"
   },
@@ -27,9 +30,26 @@
     "url": "https://github.com/n1try/wrtc-simple-data/issues"
   },
   "homepage": "https://github.com/n1try/wrtc-simple-data#readme",
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
   "devDependencies": {
-    "socket.io": "^2.0.3",
+    "@types/jest": "^20.0.2",
+    "concurrently": "^3.5.0",
     "jest-cli": "^20.0.4",
-    "portfinder": "^1.0.13"
+    "portfinder": "^1.0.13",
+    "rimraf": "^2.6.1",
+    "socket.io": "^2.0.3",
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.1"
   }
 }
