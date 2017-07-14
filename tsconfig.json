@@ -4,12 +4,14 @@
     "module": "es2015",
     "moduleResolution": "node",
     "jsx": "react",
-    "outDir": "artifacts",
     "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "outFile": "dist/index.js",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "preserveConstEnums": true,
-    "allowJs": true,
+    "allowJs": false,
     "sourceMap": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
@@ -19,6 +21,9 @@
     "typings/index.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx"
+  ],
+  "include": [
+    "./src/**/*"
   ],
   "types": [
     "react",
