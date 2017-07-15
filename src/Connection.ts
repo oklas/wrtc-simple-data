@@ -2,7 +2,7 @@ import wrtc from 'wrtc'
 import SocketIoClient from 'socket.io-client'
 import freeice from 'freeice'
 
-type ConnectionOptions = {
+export type ConnectionOptions = {
   signallingServer ?: string
   roomName ?: string
   rtcOpts ?: Object
@@ -15,12 +15,12 @@ export default class Connection {
 
   options: ConnectionOptions
   debug: (msg: string) => void
-  socket: Object
+  socket: SocketIoClient
   myId: number
   pcMap: Object
-  dataChannels: Array<Object>
+  dataChannels: Array<DataChannel>
   room: string
-  _callbacks: []
+  _callbacks: Object
 
   constructor(opts: ConnectionOptions = {}) {
     this.options = {
@@ -53,7 +53,6 @@ export default class Connection {
   }
 
   configureSocketIO = () => {
-    const socket = this.socket
 
     this.socket.on('connect', () => {
       this.socket.emit('join', this.room)
@@ -104,17 +103,17 @@ export default class Connection {
     })
   }
 
-  createConnection = (id, create) => {
-    const pc = new wrtc.RTCPeerConnection(this.options.rtcOps)
+  createConnection = (id: number, create: boolean) => {
+    const pc = new wrtc.RTCPeerConnection(this.options.rtcOpts)
     pc.id = id
     this.debug('Created peer connection ' + id)
 
     if (create) this.createDataChannel(pc)
-    else pc.ondatachannel = (event) => {
+    else pc.ondatachannel = (event: RTCDataChannel) => {
       this.onDataChannel(event, pc)
     }
 
-    pc.onicecandidate = (event) => {
+    pc.onicecandidate = (event: RTCDataChannel) => {
       this.handleIceCandidate(event, pc)
     }
 
@@ -122,7 +121,7 @@ export default class Connection {
     return pc
   }
 
-  createDataChannel = (peerconnection) => {
+  createDataChannel = (peerconnection: PeerConnection) => {
     const dataChannel = peerconnection.createDataChannel(
       this.options.channelName,
       this.options.channelOpts
@@ -133,8 +132,8 @@ export default class Connection {
     this.debug('Created data channel with peer ' + peerconnection.id)
   }
 
-  callPeer = (pc) => {
-    pc.createOffer((description) => {
+  callPeer = (pc: PeerConnection) => {
+    pc.createOffer((description: PeerDescription) => {
       description.from = this.myId
       description.to = pc.id
       this.setLocalDescription(description, pc)
@@ -142,9 +141,9 @@ export default class Connection {
     this.debug('Created offer for peer ' + pc.id)
   }
 
-  onOffer = (description, pc) => {
+  onOffer = (description: PeerDescription, pc: PeerConnection) => {
     pc.setRemoteDescription(new wrtc.RTCSessionDescription(description))
-    this.debug('Set remote description for peer ' + pc.id
+    this.debug('Set remote description for peer ' + pc.id)
     /* tslint:disable:no-shadowed-variable */
     pc.createAnswer((description) => {
       description.from = this.myId
@@ -153,18 +152,18 @@ export default class Connection {
     }, console.log)
   }
 
-  onAnswer = (description, pc) => {
+  onAnswer = (description: PeerDescription, pc: PeerConnection) => {
     pc.setRemoteDescription(new wrtc.RTCSessionDescription(description))
     this.debug('Set remote description for peer ' + description.from)
   }
 
-  setLocalDescription = (description, pc) => {
+  setLocalDescription = (description: PeerDescription, pc: PeerConnection) => {
     pc.setLocalDescription(description)
     this.debug('Set local description for ' + pc.id + ' and sent offer / answer.')
     this.socket.emit('data', description)
   }
 
-  handleIceCandidate = (event, pc) => {
+  handleIceCandidate = (event: RTCDataChannel, pc: PeerConnection) => {
     if (pc.candidateSent || !event.candidate) return
     const candidate = event.candidate
     this.socket.emit('data', {
@@ -176,7 +175,7 @@ export default class Connection {
     pc.candidateSent = true
   }
 
-  onCandidate = (candidate, pc) => {
+  onCandidate = (candidate: RTCIceCandidate, pc: PeerConnection) => {
     if (!candidate) return
     pc.addIceCandidate(new wrtc.RTCIceCandidate({
       sdpMLineIndex: candidate.sdpMLineIndex,
@@ -186,7 +185,7 @@ export default class Connection {
     this.debug('Added received candidate ' + pc.id)
   }
 
-  setDataChannelCallbacks = (dataChannel) => {
+  setDataChannelCallbacks = (dataChannel: DataChannel) => {
     dataChannel.onopen = () => {
       this.handleDataChannelState(dataChannel)
     }
@@ -199,43 +198,43 @@ export default class Connection {
     this.debug('Set the data channel callback.')
   }
 
-  handleDataChannelState = (dataChannel) => {
-      const state = dataChannel.readyState
-      this.debug('Channel is ' + state)
-      if (this._callbacks['channel:ready'] && state === 'open') {
-        this._callbacks['channel:ready']()
-      } else if (this._callbacks['channel:notready'] && state !== 'open') {
-        this._callbacks['channel:notready']()
-      }
+  handleDataChannelState = (dataChannel: DataChannel) => {
+    const state = dataChannel.readyState
+    this.debug('Channel is ' + state)
+    if (this._callbacks['channel:ready'] && state === 'open') {
+      this._callbacks['channel:ready']()
+    } else if (this._callbacks['channel:notready'] && state !== 'open') {
+      this._callbacks['channel:notready']()
+    }
   }
 
-  onDataChannel = (event, pc) => {
-      const dataChannel = event.channel
-      dataChannel.remotePeer = pc
-      this.dataChannels.push(dataChannel)
-      this.setDataChannelCallbacks(dataChannel)
+  onDataChannel = (event: RTCDataChannel, pc: PeerConnection) => {
+    const dataChannel = event.channel
+    dataChannel.remotePeer = pc
+    this.dataChannels.push(dataChannel)
+    this.setDataChannelCallbacks(dataChannel)
   }
 
-  onMessage = (event, dc) => {
-      this.debug('[Message] ' + event.data)
-      const message = 'message'
-      if (this._callbacks[message]) {
-        this._callbacks[message]({
-          text: event.data,
-          sender: dc.remotePeer.id
-        })
-      }
-  }
-
-  on = (event, callback) => {
-      this._callbacks[event] = callback
-  }
-
-  sendMessage = (message) => {
-      this.dataChannels.forEach(function (channel) {
-          channel.send(message)
+  onMessage = (event: RTCDataChannel, dc: DataChannel) => {
+    this.debug('[Message] ' + event.data)
+    const message = 'message'
+    if (this._callbacks[message]) {
+      this._callbacks[message]({
+        text: event.data,
+        sender: dc.remotePeer.id
       })
-      this.debug('Sent message')
+    }
+  }
+
+  on = (event: string, callback: (...args: any[]) => void) => {
+    this._callbacks[event] = callback
+  }
+
+  sendMessage = (message: string) => {
+    this.dataChannels.forEach(function (channel) {
+      channel.send(message)
+    })
+    this.debug('Sent message')
   }
 
   close = () => {
