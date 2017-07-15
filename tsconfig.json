@@ -4,37 +4,34 @@
     "module": "es2015",
     "moduleResolution": "node",
     "jsx": "react",
-    "rootDir": "src",
     "outDir": "dist",
-    "declarationDir": "dist",
-    "outFile": "dist/index.js",
+    "declaration": true,
+    "removeComments": false,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "preserveConstEnums": true,
     "allowJs": false,
     "sourceMap": true,
     "noImplicitReturns": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true
+    "noUnusedParameters": false,
+    "noUnusedLocals": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "@types/node",
+      "@types/jest"
+    ]
   },
   "filesGlob": [
-    "typings/index.d.ts",
+    "typings/types.d.ts",
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "include": [
-    "./src/**/*"
-  ],
-  "types": [
-    "react",
-    "react-native",
-    "jest"
-  ],
   "exclude": [
-    "android",
-    "ios",
-    "build",
-    "node_modules"
-  ],
-  "compileOnSave": false
+    "coverage",
+    "dist",
+    "node_modules",
+    "test"
+  ]
 }
