@@ -1,10 +1,14 @@
-var dc = require('./../')({
+import Connection from './../src'
+import readline from 'readline'
+
+const dc = new Connection({
     roomName: 'chatRoom',
     signallingServer: 'http://45.32.186.169:3000',
     rtcOpts: {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]},
     debugMode: true
 });
-var rl = require('readline').createInterface({
+
+const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
