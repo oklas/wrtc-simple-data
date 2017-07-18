@@ -9,7 +9,7 @@ var rl = require('readline').createInterface({
     output: process.stdout
 });
 
-dc.on('ready', function () {
+dc.on('ready', function ()  {
     dc.on('channel:ready', function () {
         console.log('Yeah we got a new data channel with a new peer.');
     });
