@@ -2,7 +2,7 @@
   "name": "wrtc-simple-data",
   "version": "0.0.2",
   "description": "A simple Node.js library to communicate via WebRTC data channels as simple and lightweight as any possible.",
-  "main": "dist/index.js",
+  "main": "dist/src",
   "typings": "dist/main.d.ts",
   "scripts": {
     "build": "tsc",

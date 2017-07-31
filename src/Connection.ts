@@ -9,6 +9,7 @@ export type ConnectionOptions = {
   channelName ?: string
   channelOpts ?: Object
   debugMode ?: boolean
+  debugLogger ?: (msg: string) => void
 }
 
 export default class Connection {
@@ -32,14 +33,18 @@ export default class Connection {
         debugMode: opts.debugMode || false
     }
 
-    this.debug = ( this.options.debugMode ?
-      function (msg: string) {
-        return console.log('[DEBUG] ' + msg)
-      } :
-      function (msg ?: string) {
-        return undefined
-      }
-    )
+    if( this.options.debugMode && opts.debugLogger ) {
+      this.debug = opts.debugLogger
+    } else {
+      this.debug = ( this.options.debugMode ?
+        function (msg: string) {
+          return console.log('[DEBUG] ' + msg)
+        } :
+        function (_msg ?: string) {
+          return undefined
+        }
+      )
+    }
 
     this.socket = SocketIoClient(this.options.signallingServer)
     this.myId = undefined
@@ -58,7 +63,7 @@ export default class Connection {
       this.socket.emit('join', this.room)
       this.debug('Sent request to join room ' + this.room)
 
-      this.socket.on('created', (id) => {
+      this.socket.on('created', (_id) => {
         this.debug('Created new room ' + this.room)
       })
 
@@ -106,14 +111,14 @@ export default class Connection {
   createConnection = (id: number, create: boolean) => {
     const pc = new wrtc.RTCPeerConnection(this.options.rtcOpts)
     pc.id = id
-    this.debug('Created peer connection ' + id)
+    this.debug('Created peer connection ' + id + (create?' new':' joined'))
 
     if (create) this.createDataChannel(pc)
     else pc.ondatachannel = (event: RTCDataChannel) => {
       this.onDataChannel(event, pc)
     }
 
-    pc.onicecandidate = (event: RTCDataChannel) => {
+    pc.onicecandidate = (event: RTCIceCandidate) => {
       this.handleIceCandidate(event, pc)
     }
 
@@ -142,7 +147,7 @@ export default class Connection {
   }
 
   onOffer = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description))
+    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description), ()=>{}, ()=>{})
     this.debug('Set remote description for peer ' + pc.id)
     /* tslint:disable:no-shadowed-variable */
     pc.createAnswer((description) => {
@@ -153,17 +158,17 @@ export default class Connection {
   }
 
   onAnswer = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description))
+    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description), ()=>{}, ()=>{})
     this.debug('Set remote description for peer ' + description.from)
   }
 
   setLocalDescription = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setLocalDescription(description)
+    pc.setLocalDescription(description, ()=>{}, ()=>{})
     this.debug('Set local description for ' + pc.id + ' and sent offer / answer.')
     this.socket.emit('data', description)
   }
 
-  handleIceCandidate = (event: RTCDataChannel, pc: PeerConnection) => {
+  handleIceCandidate = (event: RTCIceCandidate, pc: PeerConnection) => {
     if (pc.candidateSent || !event.candidate) return
     const candidate = event.candidate
     this.socket.emit('data', {
