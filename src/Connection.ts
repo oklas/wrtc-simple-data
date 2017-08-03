@@ -1,8 +1,8 @@
-import wrtc from 'wrtc'
-import SocketIoClient from 'socket.io-client'
-import freeice from 'freeice'
+import wrtc from "wrtc"
+import SocketIoClient from "socket.io-client"
+import freeice from "freeice"
 
-export type ConnectionOptions = {
+export type WrtcDataConnectionOptions = {
   signallingServer ?: string
   roomName ?: string
   rtcOpts ?: Object
@@ -14,7 +14,7 @@ export type ConnectionOptions = {
 
 export default class Connection {
 
-  options: ConnectionOptions
+  options: WrtcDataConnectionOptions
   debug: (msg: string) => void
   socket: SocketIoClient
   myId: number
@@ -23,7 +23,7 @@ export default class Connection {
   room: string
   _callbacks: Object
 
-  constructor(opts: ConnectionOptions = {}) {
+  constructor(opts: WrtcDataConnectionOptions = {}) {
     this.options = {
         signallingServer: opts.signallingServer || 'http://localhost:3000/',
         roomName: opts.roomName || 'defaultRoom',

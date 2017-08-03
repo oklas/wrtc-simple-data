@@ -4,7 +4,7 @@
     "module": "es2015",
     "moduleResolution": "node",
     "jsx": "react",
-    "outDir": "dist",
+    "outDir": "build",
     "declaration": true,
     "removeComments": false,
     "allowSyntheticDefaultImports": true,
@@ -30,6 +30,7 @@
   ],
   "exclude": [
     "coverage",
+    "build",
     "dist",
     "node_modules",
     "test"
