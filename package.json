@@ -20,8 +20,8 @@
     "lint": "tslint src/**/*.ts",
     "test": "jest",
     "cover": "jest --coverage",
-    "example:client": "babel-node --presets es2015 -- dist/examples/commandline-client.js",
-    "server": "babel-node --presets es2015 -- dist/src/server.js"
+    "example:client": "babel-node --presets es2015 -- build/examples/commandline-client.js",
+    "example:service": "babel-node --presets es2015 -- build/examples/service.js"
   },
   "dependencies": {
     "freeice": "^2.2.0",
