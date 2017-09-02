@@ -138,32 +138,39 @@ export default class Connection {
   }
 
   callPeer = (pc: PeerConnection) => {
-    pc.createOffer((description: PeerDescription) => {
-      description.from = this.myId
-      description.to = pc.id
+    pc.createOffer((rtcsd: RTCSessionDescription) => {
+      const description: PeerDescription = {
+        type: rtcsd.type,
+        rtcsd: rtcsd,
+        from: this.myId,
+        to: pc.id,
+      }
       this.setLocalDescription(description, pc)
-    }, console.log)
+    }, this.debug)
     this.debug('Created offer for peer ' + pc.id)
   }
 
   onOffer = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description), ()=>{}, ()=>{})
+    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description.rtcsd), ()=>{}, ()=>{})
     this.debug('Set remote description for peer ' + pc.id)
-    /* tslint:disable:no-shadowed-variable */
-    pc.createAnswer((description) => {
-      description.from = this.myId
-      description.to = pc.id
+    pc.createAnswer((rtcsd: RTCSessionDescription) => {
+      const description: PeerDescription = {
+        type: rtcsd.type,
+        rtcsd: rtcsd,
+        from: this.myId,
+        to: pc.id,
+      }
       this.setLocalDescription(description, pc)
-    }, console.log)
+    }, this.debug)
   }
 
   onAnswer = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description), ()=>{}, ()=>{})
+    pc.setRemoteDescription(new wrtc.RTCSessionDescription(description.rtcsd), ()=>{}, ()=>{})
     this.debug('Set remote description for peer ' + description.from)
   }
 
   setLocalDescription = (description: PeerDescription, pc: PeerConnection) => {
-    pc.setLocalDescription(description, ()=>{}, ()=>{})
+    pc.setLocalDescription(description.rtcsd, ()=>{}, ()=>{})
     this.debug('Set local description for ' + pc.id + ' and sent offer / answer.')
     this.socket.emit('data', description)
   }

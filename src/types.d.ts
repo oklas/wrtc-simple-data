@@ -32,8 +32,10 @@ interface DataChannel {
 }
 
 interface PeerDescription {
+  type: string
   from: number
   to: number
+  rtcsd: RTCSessionDescription
 }
 
 interface PeerConnection {
@@ -45,19 +47,19 @@ interface PeerConnection {
     failure: (error) => void,
   ) => void
   setLocalDescription: (
-    description: PeerDescription,
+    rtcsd: RTCSessionDescription,
     success: () => void,
     failure: (error) => void,
   ) => void
   addIceCandidate: (candidate: RTCIceCandidate) => void
   createDataChannel: (name: string, opts: Object) => DataChannel
   createOffer: (
-    cb: (description: PeerDescription) => void,
-    log: (...args: any[]) => void
+    cb: (rtcsd: RTCSessionDescription) => void,
+    failcb: (...args: any[]) => void
   ) => void
   createAnswer: (
-    cb: (description: PeerDescription) => void,
-    log: (...args: any[]) => void
+    cb: (rtcsd: RTCSessionDescription) => void,
+    failcb: (...args: any[]) => void
   ) => void
 }
 

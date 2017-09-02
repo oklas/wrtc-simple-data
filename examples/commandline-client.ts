@@ -5,7 +5,7 @@ const dc = new Connection({
     roomName: 'chatRoom',
     signallingServer: 'http://45.76.34.60:3000',
     rtcOpts: {iceServers: [{urls: 'stun:stun.l.google.com:19302'}]},
-    debugMode: true
+    debugMode: false
 });
 
 const rl = readline.createInterface({
